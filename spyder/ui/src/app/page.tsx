@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import useWebSocket, { ReadyState } from "react-use-websocket"
-import { useTheme } from "next-themes"
-import Image from "next/image"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Thermometer } from "lucide-react"
-import Numeric from "../components/custom/numeric"
-import RedbackLogoDarkMode from "../../public/logo-darkmode.svg"
-import RedbackLogoLightMode from "../../public/logo-lightmode.svg"
+import { useState, useEffect } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Thermometer } from "lucide-react";
+import Numeric from "../components/custom/numeric";
+import RedbackLogoDarkMode from "../../public/logo-darkmode.svg";
+import RedbackLogoLightMode from "../../public/logo-lightmode.svg";
 
-const WS_URL = "ws://localhost:8080"
+const WS_URL = "ws://localhost:8080";
 
 interface VehicleData {
-  battery_temperature: number
-  timestamp: number
+  battery_temperature: number;
+  timestamp: number;
 }
 
 /**
@@ -25,16 +25,18 @@ interface VehicleData {
  * @returns {JSX.Element} The rendered page component.
  */
 export default function Page(): JSX.Element {
-  const { setTheme } = useTheme()
-  const [temperature, setTemperature] = useState<any>(0)
-  const [connectionStatus, setConnectionStatus] = useState<string>("Disconnected")
-  const { lastJsonMessage, readyState }: { lastJsonMessage: VehicleData | null; readyState: ReadyState } = useWebSocket(
-    WS_URL,
-    {
+  const { setTheme } = useTheme();
+  const [temperature, setTemperature] = useState<any>(0);
+  const [connectionStatus, setConnectionStatus] =
+    useState<string>("Disconnected");
+  const {
+    lastJsonMessage,
+    readyState,
+  }: { lastJsonMessage: VehicleData | null; readyState: ReadyState } =
+    useWebSocket(WS_URL, {
       share: false,
       shouldReconnect: () => true,
-    },
-  )
+    });
 
   /**
    * Effect hook to handle WebSocket connection state changes.
@@ -42,39 +44,39 @@ export default function Page(): JSX.Element {
   useEffect(() => {
     switch (readyState) {
       case ReadyState.OPEN:
-        console.log("Connected to streaming service")
-        setConnectionStatus("Connected")
-        break
+        console.log("Connected to streaming service");
+        setConnectionStatus("Connected");
+        break;
       case ReadyState.CLOSED:
-        console.log("Disconnected from streaming service")
-        setConnectionStatus("Disconnected")
-        break
+        console.log("Disconnected from streaming service");
+        setConnectionStatus("Disconnected");
+        break;
       case ReadyState.CONNECTING:
-        setConnectionStatus("Connecting")
-        break
+        setConnectionStatus("Connecting");
+        break;
       default:
-        setConnectionStatus("Disconnected")
-        break
+        setConnectionStatus("Disconnected");
+        break;
     }
-  }, [])
+  }, [readyState]);
 
   /**
    * Effect hook to handle incoming WebSocket messages.
    */
   useEffect(() => {
-    console.log("Received: ", lastJsonMessage)
+    // console.log("Received: ", lastJsonMessage);
     if (lastJsonMessage === null) {
-      return
+      return;
     }
-    setTemperature(lastJsonMessage.battery_temperature)
-  }, [lastJsonMessage])
+    setTemperature(lastJsonMessage.battery_temperature);
+  }, [lastJsonMessage]);
 
   /**
    * Effect hook to set the theme to dark mode.
    */
   useEffect(() => {
-    setTheme("dark")
-  }, [setTheme])
+    setTheme("dark");
+  }, [setTheme]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -84,8 +86,13 @@ export default function Page(): JSX.Element {
           className="h-12 w-auto"
           alt="Redback Racing Logo"
         />
-        <h1 className="text-foreground text-xl font-semibold">DAQ Technical Assessment</h1>
-        <Badge variant={connectionStatus === "Connected" ? "success" : "destructive"} className="ml-auto">
+        <h1 className="text-foreground text-xl font-semibold">
+          DAQ Technical Assessment
+        </h1>
+        <Badge
+          variant={connectionStatus === "Connected" ? "success" : "destructive"}
+          className="ml-auto"
+        >
           {connectionStatus}
         </Badge>
       </header>
@@ -98,10 +105,12 @@ export default function Page(): JSX.Element {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
-            <Numeric temp={temperature} />
+            <Numeric
+              temp={temperature !== null ? temperature.toFixed(3) : "N/A"}
+            />
           </CardContent>
         </Card>
       </main>
     </div>
-  )
+  );
 }

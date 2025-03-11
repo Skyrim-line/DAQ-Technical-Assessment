@@ -18,6 +18,13 @@ const EXCEED_LIMIT = 3; // More than 3 times in 5 seconds
 const TIME_WINDOW_MS = 5000;
 
 /**
+ * Converts timestamp to human-readable format.
+ */
+function formatTimestamp(timestamp: number): string {
+  return new Date(timestamp).toLocaleTimeString();
+}
+
+/**
  * Checks if the value is a valid number.
  */
 function isValidNumber(value: any): boolean {
@@ -98,7 +105,10 @@ function logTemperatureExceedance(temp: number, timestamp: number) {
     console.error(
       `[ALERT] Battery temperature exceeded safe range more than ${EXCEED_LIMIT} times in ${
         TIME_WINDOW_MS / 1000
-      } seconds! Timestamp: ${timestamp}`
+      } seconds!`
+    );
+    console.error(
+      `Timestamp: ${formatTimestamp(timestamp)}, Temperature: ${temp}°C`
     );
   }
 }
@@ -108,7 +118,6 @@ tcpServer.on("connection", (socket) => {
 
   socket.on("data", (msg) => {
     const message: string = msg.toString().trim();
-    console.log(`Received raw data: ${message}`);
 
     try {
       const parsedData: any = JSON.parse(message);
@@ -121,19 +130,20 @@ tcpServer.on("connection", (socket) => {
 
       const { battery_temperature, timestamp } = validatedData;
 
-      // Check and log temperature exceedances
+      // Check and log temperature exceedances but DO NOT filter them out
       if (
         battery_temperature < SAFE_TEMP_RANGE.min ||
         battery_temperature > SAFE_TEMP_RANGE.max
       ) {
         logTemperatureExceedance(battery_temperature, timestamp);
         console.warn(
-          `Ignoring out-of-range temperature: ${battery_temperature}°C`
+          `[WARN] Temperature out of range: ${battery_temperature}°C Timestamp: ${formatTimestamp(
+            timestamp
+          )}`
         );
-        return;
       }
 
-      // Send JSON over WS to frontend clients
+      // **Send all data (including out-of-range) to WebSocket clients**
       websocketServer.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify(validatedData));

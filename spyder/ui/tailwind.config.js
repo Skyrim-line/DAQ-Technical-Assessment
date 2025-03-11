@@ -4,6 +4,11 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      colors: {
+        safe: "#10B981", // Green
+        warning: "#F59E0B", // Yellow
+        danger: "#EF4444", // Red
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
