@@ -16,15 +16,19 @@ function generate_and_send_battery_data() {
   if (Math.random() < IN_RANGE_PROBABILITY) {
     generated_value = getRandomIntInclusive(20, 80) + Math.random();
   } else {
-    generated_value = Math.random() < 0.5
-      ? getRandomIntInclusive(0, 20)
-      : getRandomIntInclusive(82, 1000);
+    generated_value =
+      Math.random() < 0.5
+        ? getRandomIntInclusive(0, 20)
+        : getRandomIntInclusive(82, 1000);
   }
 
   let data = {
-    battery_temperature: Math.random() < BINARY_PROBABILITY 
-      ? Buffer.from(new Uint32Array([generated_value]).buffer).toString('binary')
-      : generated_value,
+    battery_temperature:
+      Math.random() < BINARY_PROBABILITY
+        ? Buffer.from(new Uint32Array([generated_value]).buffer).toString(
+            "binary"
+          )
+        : generated_value,
     timestamp: Date.now(),
   };
 
