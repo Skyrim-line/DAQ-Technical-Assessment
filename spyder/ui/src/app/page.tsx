@@ -1,7 +1,5 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,74 +8,14 @@ import { Thermometer, AlertTriangle } from "lucide-react";
 import Numeric from "../components/custom/numeric";
 import TemperatureGraph from "../components/custom/TempGraph";
 import ThemeToggle from "../components/custom/ThemeToggle";
+import { useData } from "../components/context/data-wrapper";
 import RedbackLogoDarkMode from "../../public/logo-darkmode.svg";
 import RedbackLogoLightMode from "../../public/logo-lightmode.svg";
 
-const WS_URL = "ws://localhost:8080";
-const SAFE_TEMP_RANGE = { min: 20, max: 80 };
-
-interface VehicleData {
-  battery_temperature: number;
-  timestamp: number;
-}
-
 export default function Page(): JSX.Element {
   const { resolvedTheme } = useTheme();
+  const { temperature, abnormalTemperatures, connectionStatus } = useData();
   const [clientTheme, setClientTheme] = useState<string | undefined>(undefined);
-  const [temperature, setTemperature] = useState<number | null>(null);
-  const [connectionStatus, setConnectionStatus] =
-    useState<string>("Disconnected");
-  const [abnormalTemperatures, setAbnormalTemperatures] = useState<
-    { temperature: number; timestamp: string }[]
-  >([]);
-
-  const {
-    lastJsonMessage,
-    readyState,
-  }: { lastJsonMessage: VehicleData | null; readyState: ReadyState } =
-    useWebSocket(WS_URL, {
-      share: false,
-      shouldReconnect: () => true,
-    });
-
-  useEffect(() => {
-    switch (readyState) {
-      case ReadyState.OPEN:
-        setConnectionStatus("Connected");
-        break;
-      case ReadyState.CLOSED:
-        setConnectionStatus("Disconnected");
-        break;
-      case ReadyState.CONNECTING:
-        setConnectionStatus("Connecting");
-        break;
-      default:
-        setConnectionStatus("Disconnected");
-        break;
-    }
-  }, [readyState]);
-
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
-
-    const { battery_temperature, timestamp } = lastJsonMessage;
-    setTemperature(battery_temperature);
-
-    // record abnormal temperatures
-    if (
-      battery_temperature < SAFE_TEMP_RANGE.min ||
-      battery_temperature > SAFE_TEMP_RANGE.max
-    ) {
-      setAbnormalTemperatures((prev) => {
-        const formattedTime = new Date(timestamp).toLocaleTimeString();
-        const newAbnormal = [
-          { temperature: battery_temperature, timestamp: formattedTime },
-          ...prev,
-        ];
-        return newAbnormal.slice(0, 10); // Keep 10 most recent logs
-      });
-    }
-  }, [lastJsonMessage]);
 
   useEffect(() => {
     setClientTheme(resolvedTheme);
@@ -110,7 +48,7 @@ export default function Page(): JSX.Element {
         </Badge>
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-center p-8 ">
+      <main className="flex-grow flex flex-col items-center justify-center p-8">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-light flex items-center gap-2">
@@ -125,7 +63,7 @@ export default function Page(): JSX.Element {
           </CardContent>
         </Card>
 
-        {/* 温度趋势折线图 */}
+        {/* Temperature graph */}
         <div className="mt-8 w-full max-w-2xl">
           <Card>
             <CardHeader>
@@ -139,7 +77,7 @@ export default function Page(): JSX.Element {
           </Card>
         </div>
 
-        {/* Abnormal Temperature Logs here just record 10 messages here */}
+        {/* Abnormal temperature logs */}
         <div className="mt-8 w-full max-w-2xl">
           <Card>
             <CardHeader>

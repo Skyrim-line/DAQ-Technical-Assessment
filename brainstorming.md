@@ -247,3 +247,6 @@ To help users pinpoint the exact time when the temperature becomes abnormal, I h
 
 To create additional features, personally I feel like build dark mode and light mode switches so that user can have a better experience when looking through websites. In order to solve this I use shadcn to allow users to switch between dark and light mode even can following the system's setting. In order to solve this we need to add a button and two different icons for user to click on, if user click button it will show dropdown menu for user to select.
 
+### Task6
+
+To solve this issue, I decided to create a new file called data-wrapper.tsx in the /components/context directory and use it in layout.tsx to wrap all child elements. This way, in page.tsx, we can easily separate it into different components.
