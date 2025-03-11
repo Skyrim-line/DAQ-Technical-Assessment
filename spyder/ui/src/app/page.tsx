@@ -10,6 +10,7 @@ import { Thermometer } from "lucide-react";
 import Numeric from "../components/custom/numeric";
 import RedbackLogoDarkMode from "../../public/logo-darkmode.svg";
 import RedbackLogoLightMode from "../../public/logo-lightmode.svg";
+import ThemeToggle from "../components/custom/ThemeToggle";
 
 const WS_URL = "ws://localhost:8080";
 
@@ -25,7 +26,7 @@ interface VehicleData {
  * @returns {JSX.Element} The rendered page component.
  */
 export default function Page(): JSX.Element {
-  const { setTheme } = useTheme();
+  const { theme } = useTheme();
   const [temperature, setTemperature] = useState<any>(0);
   const [connectionStatus, setConnectionStatus] =
     useState<string>("Disconnected");
@@ -74,21 +75,23 @@ export default function Page(): JSX.Element {
   /**
    * Effect hook to set the theme to dark mode.
    */
-  useEffect(() => {
-    setTheme("dark");
-  }, [setTheme]);
+  // useEffect(() => {
+  //   setTheme("dark");
+  // }, [setTheme]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="px-5 h-20 flex items-center gap-5 border-b">
         <Image
-          src={RedbackLogoDarkMode}
+          src={theme === "dark" ? RedbackLogoDarkMode : RedbackLogoLightMode}
           className="h-12 w-auto"
           alt="Redback Racing Logo"
         />
         <h1 className="text-foreground text-xl font-semibold">
           DAQ Technical Assessment
         </h1>
+        {/* Dark/Light Mode Toggle */}
+        <ThemeToggle />
         <Badge
           variant={connectionStatus === "Connected" ? "success" : "destructive"}
           className="ml-auto"
@@ -101,7 +104,7 @@ export default function Page(): JSX.Element {
           <CardHeader>
             <CardTitle className="text-2xl font-light flex items-center gap-2">
               <Thermometer className="h-6 w-6" />
-              Live Battery Temperature Value
+              Live Battery Temperature
             </CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center">

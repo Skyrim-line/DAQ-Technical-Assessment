@@ -2,7 +2,7 @@ interface TemperatureProps {
   temp: any;
 }
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 /**
  * Numeric component that displays the temperature value.
  *
@@ -18,11 +18,14 @@ function Numeric({ temp }: TemperatureProps) {
 
   // Justify your choice of implementation in brainstorming.md
 
-  const getTempColor = (temp: number) => {
-    if (temp < 20 || temp > 80) return "text-danger"; // Unsafe (Red)
-    if ((temp >= 20 && temp <= 25) || (temp >= 75 && temp <= 80))
-      return "text-warning"; // Nearing unsafe (Yellow)
-    return "text-safe"; // Safe (Green)
+  const getTempColor = (tempValue: any) => {
+    // convert tempValue to a number
+    const numTemp = parseFloat(tempValue);
+    // using tailwindcss color classes
+    if (numTemp < 20 || numTemp > 80) return "text-red-500"; // danger color
+    if ((numTemp >= 20 && numTemp <= 25) || (numTemp >= 75 && numTemp <= 80))
+      return "text-yellow-500"; // warning color
+    return "text-green-500"; // safe color
   };
 
   return (

@@ -201,41 +201,32 @@ useEffect(() => {
 
 * Ensure the data displayed from `streaming-service` is correct to **3 decimal places** instead of being unbounded as it is currently.
 
-To solve this question, i modified numeric.tsx file to apply `.toFixed(3)` to the temperature value. Ensure that `temp` is always a valid number. 
+To solve this question, i modified page.tsx file to apply `.toFixed(3)` to the temperature value. Ensure that `temp` is always a valid number. 
 
 ```tsx
-return (
-  <div className={`text-4xl font-bold ${getTempColor(temp)}`}>
-    {`${temp.toFixed(3)}°C`}
-  </div>
-);
+<Numeric temp={temperature !== null ? temperature.toFixed(3) : "N/A"}/>
 ```
 
 * Ensure the battery temperature value changes colours based on the current temperature (E.g. changing to red when the safe temperature range is exceeded).
 
-To solve this question, I modified tailwind.config.js file to define three different range of colors, then I Implement a function `getTempColor(temp)` to return the correct class.
-
-```tsx
-theme: {
-    extend: {
-      colors: {
-        safe: "#10B981", // Green
-        warning: "#F59E0B", // Yellow
-        danger: "#EF4444", // Red
-      },
-```
+To solve this question, I modified `Numeric.tsx` file to define three different range of colors, then I Implement a function `getTempColor(temp)` to return the correct class.
 
 Here is code implementated in Numeric.tsx file 
 
 ```tsx
-const getTempColor = (temp: number) => {
-  if (temp < 20 || temp > 80) return "text-danger";
-  if ((temp >= 20 && temp <= 25) || (temp >= 75 && temp <= 80)) return "text-warning";
-  return "text-safe";
-};
- return (
+const getTempColor = (tempValue: any) => {
+    // convert tempValue to a number
+    const numTemp = parseFloat(tempValue);
+    // using tailwindcss color classes
+    if (numTemp < 20 || numTemp > 80) return "text-red-500"; // danger color
+    if ((numTemp >= 20 && numTemp <= 25) || (numTemp >= 75 && numTemp <= 80))
+      return "text-yellow-500"; // warning color
+    return "text-green-500"; // safe color
+  };
+
+  return (
     <div className={cn("text-4xl font-bold", getTempColor(temp))}>
-      {`${temp.toFixed(3)}°C`}
+      {`${temp}°C`}
     </div>
   );
 ```
