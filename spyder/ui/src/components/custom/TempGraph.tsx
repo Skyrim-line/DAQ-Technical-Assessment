@@ -24,7 +24,6 @@ export default function TemperatureGraph({
   useEffect(() => {
     if (temperature === null) return;
 
-    // 仅在温度变化足够显著时才更新数据，避免频繁触发渲染
     if (
       lastTemperature.current !== null &&
       Math.abs(temperature - lastTemperature.current) > 50
@@ -38,7 +37,7 @@ export default function TemperatureGraph({
 
     setData((prev) => {
       const newData = [...prev, { time: formattedTime, temp: temperature }];
-      return newData.length > 20 ? newData.slice(1) : newData;
+      return newData.length > 20 ? newData.slice(1) : newData; // record last 20 data points
     });
   }, [temperature]);
 
@@ -47,7 +46,7 @@ export default function TemperatureGraph({
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="time" />
-        <YAxis domain={[0, 100]} />
+        <YAxis domain={[0, 100]} /> {/* 0-100% */}
         <Tooltip />
         <Line
           type="monotone"
@@ -55,7 +54,7 @@ export default function TemperatureGraph({
           stroke="#10B981"
           strokeWidth={2}
           dot={false}
-          animationDuration={500} // 使过渡更平滑
+          animationDuration={500} // make it more smooth
         />
       </LineChart>
     </ResponsiveContainer>

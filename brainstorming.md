@@ -233,82 +233,17 @@ const getTempColor = (tempValue: any) => {
 
 * Create three additional features in the provided system. **These should involve visible changes in the `ui` but do not have to exclusively involve the ui** (E.g. error messages interface, light-mode toggle, graphing data).
 
-### **Live Temperature Graph**
+### Solutions:
 
-#### **Approach:**
+#### 1. **Live Temperature Graph**
 
-- Use `recharts` to create a real-time line graph.
-- Store the last **20 temperature values** to display trends.
+To enhance the user’s visualization experience, I have decided to create a dynamic temperature graph that clearly shows trends, making it easier for users to identify patterns and engage in discussions.
 
-```tsx
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+#### 2.Abnormal Temperature Logs
 
-interface GraphProps {
-  data: { timestamp: string; battery_temperature: number }[];
-}
+To help users pinpoint the exact time when the temperature becomes abnormal, I have decided to create a log for them to view. It can store 10 to 20 messages and can even be extended to track battery changes over 24 hours.
 
-export default function Graph({ data }: GraphProps) {
-  return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="timestamp" />
-        <YAxis domain={[0, 100]} />
-        <Tooltip />
-        <Line type="monotone" dataKey="battery_temperature" stroke="#8884d8" dot={false} />
-      </LineChart>
-    </ResponsiveContainer>
-  );
-}
-```
+#### 3. **Dark/Light Mode Toggle**
 
-
-
-### **Toast Notifications for Unsafe Temperatures**
-
-#### **Approach:**
-
-- Use `react-toastify` to show notifications when **temperature is out of range**.
-- Display an error message if temperature <20°C or >80°C.
-
-```tsx
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-useEffect(() => {
-  if (lastJsonMessage && (lastJsonMessage.battery_temperature < 20 || lastJsonMessage.battery_temperature > 80)) {
-    toast.error(`Temperature out of range: ${lastJsonMessage.battery_temperature.toFixed(3)}°C`, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-    });
-  }
-}, [lastJsonMessage]);
-```
-
-Then we add this in page.tsx as `<ToastContainer />`
-
-### **Dark/Light Mode Toggle**
-
-To create additional features, personally I feel like build dark mode and light mode switches so that user can have a better experience when looking through websites. In order to solve this I use `next-themes` to allow users to switch between dark and light mode. In order to solve this we need to add a button and two different icons for user to click on.
-
-```ts
-"use client";
-
-import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
-
-export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-
-  return (
-    <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 rounded-lg transition-all duration-200"
-    >
-      {theme === "dark" ? <Sun className="h-5 w-5 text-yellow-400" /> : <Moon className="h-5 w-5 text-gray-900" />}
-    </button>
-  );
-}
-```
+To create additional features, personally I feel like build dark mode and light mode switches so that user can have a better experience when looking through websites. In order to solve this I use shadcn to allow users to switch between dark and light mode even can following the system's setting. In order to solve this we need to add a button and two different icons for user to click on, if user click button it will show dropdown menu for user to select.
 
