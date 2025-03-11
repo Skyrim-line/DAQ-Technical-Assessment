@@ -26,7 +26,8 @@ interface VehicleData {
  * @returns {JSX.Element} The rendered page component.
  */
 export default function Page(): JSX.Element {
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [temperature, setTemperature] = useState<any>(0);
   const [connectionStatus, setConnectionStatus] =
     useState<string>("Disconnected");
@@ -83,7 +84,11 @@ export default function Page(): JSX.Element {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="px-5 h-20 flex items-center gap-5 border-b">
         <Image
-          src={theme === "dark" ? RedbackLogoDarkMode : RedbackLogoLightMode}
+          src={
+            resolvedTheme === "dark"
+              ? RedbackLogoDarkMode
+              : RedbackLogoLightMode
+          }
           className="h-12 w-auto"
           alt="Redback Racing Logo"
         />
