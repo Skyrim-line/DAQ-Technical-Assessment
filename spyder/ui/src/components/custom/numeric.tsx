@@ -2,6 +2,7 @@ interface TemperatureProps {
   temp: any;
 }
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 /**
  * Numeric component that displays the temperature value.
  *
@@ -26,7 +27,7 @@ function Numeric({ temp }: TemperatureProps) {
 
   return (
     <div className={cn("text-4xl font-bold", getTempColor(temp))}>
-      {`${temp.toFixed(3)}°C`}
+      {`${temp}°C`}
     </div>
   );
 }

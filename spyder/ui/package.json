@@ -25,9 +25,10 @@
     "ws": "^8.12.1"
   },
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "nodemon": "nodemon --ext js,jsx,ts,tsx --exec npm run dev"
   },
   "eslintConfig": {
     "extends": [

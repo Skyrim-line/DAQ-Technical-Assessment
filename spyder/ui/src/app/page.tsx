@@ -101,7 +101,7 @@ export default function Page(): JSX.Element {
           <CardHeader>
             <CardTitle className="text-2xl font-light flex items-center gap-2">
               <Thermometer className="h-6 w-6" />
-              Live Battery Temperature
+              Live Battery Temperature Value
             </CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
